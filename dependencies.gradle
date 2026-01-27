@@ -1,39 +1,57 @@
 /*
- * Add your dependencies here. Supported configurations:
- *  - api("group:name:version:classifier"): if you use the types from this dependency in the public API of this mod
- *       Available at runtime and compiletime for mods depending on this mod
- *  - implementation("g:n:v:c"): if you need this for internal implementation details of the mod, but none of it is visible via the public API
- *       Available at runtime but not compiletime for mods depending on this mod
- *  - compileOnly("g:n:v:c"): if the mod you're building doesn't need this dependency during runtime at all, e.g. for optional mods
- *       Not available at all for mods depending on this mod, only visible at compiletime for this mod
- *  - compileOnlyApi("g:n:v:c"): like compileOnly, but also visible at compiletime for mods depending on this mod
- *       Available at compiletime but not runtime for mods depending on this mod
- *  - runtimeOnlyNonPublishable("g:n:v:c"): if you want to include a mod in this mod's runClient/runServer runs, but not publish it as a dependency
- *       Not available at all for mods depending on this mod, only visible at runtime for this mod
- *  - devOnlyNonPublishable("g:n:v:c"): a combination of runtimeOnlyNonPublishable and compileOnly for dependencies present at both compiletime and runtime,
- *       but not published as Maven dependencies - useful for RFG-deobfuscated dependencies or local testing
- *  - runtimeOnly("g:n:v:c"): if you don't need this at compile time, but want it to be present at runtime
- *       Available at runtime for mods depending on this mod
- *  - annotationProcessor("g:n:v:c"): mostly for java compiler plugins, if you know you need this, use it, otherwise don't worry
- *  - testCONFIG("g:n:v:c") - replace CONFIG by one of the above (except api), same as above but for the test sources instead of main
+ * 在这里添加你的依赖项。支持的配置有：
+ *  - api("group:name:version:classifier")：如果你在此 Mod 的公共 API 中使用了该依赖的类型
+ *       对依赖此 Mod 的其他 Mod 来说，在运行期和编译期都可用
+ *  - implementation("g:n:v:c")：仅用于 Mod 的内部实现细节，且不会通过公共 API 暴露
+ *       对依赖此 Mod 的其他 Mod 来说，仅在运行期可用，编译期不可用
+ *  - compileOnly("g:n:v:c")：如果你构建的 Mod 在运行时完全不需要该依赖，例如可选 Mod
+ *       对依赖此 Mod 的其他 Mod 来说完全不可用，仅在本 Mod 的编译期可见
+ *  - compileOnlyApi("g:n:v:c")：类似 compileOnly，但对依赖此 Mod 的其他 Mod 在编译期也可见
+ *       对依赖此 Mod 的其他 Mod 来说，仅在编译期可用，运行期不可用
+ *  - runtimeOnlyNonPublishable("g:n:v:c")：如果你希望在本 Mod 的 runClient/runServer 运行中包含该 Mod，
+ *       但不将其作为依赖发布
+ *       对依赖此 Mod 的其他 Mod 来说完全不可用，仅在本 Mod 的运行期可见
+ *  - devOnlyNonPublishable("g:n:v:c")：runtimeOnlyNonPublishable 与 compileOnly 的组合，
+ *       该依赖在编译期和运行期都存在，但不会作为 Maven 依赖发布
+ *       常用于 RFG 反混淆依赖或本地测试
+ *  - runtimeOnly("g:n:v:c")：如果你在编译期不需要该依赖，但希望它在运行期存在
+ *       对依赖此 Mod 的其他 Mod 来说，在运行期可用
+ *  - annotationProcessor("g:n:v:c")：主要用于 Java 编译器插件，
+ *       如果你知道自己需要它就使用，否则可以忽略
+ *  - testCONFIG("g:n:v:c")：将 CONFIG 替换为上述配置之一（api 除外），
+ *       与上面含义相同，但作用于测试源码而不是主源码
  *
- *  - shadowImplementation("g:n:v:c"): effectively the same as API, but the dependency is included in your jar under a renamed package name
- *       Requires you to enable usesShadowedDependencies in gradle.properties
+ *  - shadowImplementation("g:n:v:c")：效果上类似 api，
+ *       但该依赖会以重命名后的包名被打包进你的 jar 中
+ *       需要在 gradle.properties 中启用 usesShadowedDependencies
  *
- *  - compile("g:n:v:c"): deprecated, replace with "api" (works like the old "compile") or "implementation" (can be more efficient)
+ *  - compile("g:n:v:c")：已废弃，
+ *       请使用 "api"（行为与旧的 compile 相同）
+ *       或 "implementation"（通常效率更高）
  *
- * You can exclude transitive dependencies (dependencies of the chosen dependency) by appending { transitive = false } if needed,
- * but use this sparingly as it can break using your mod as another mod's dependency if you're not careful.
+ * 如有需要，可以通过在依赖后追加 { transitive = false } 来排除传递依赖
+ * （即该依赖自身所依赖的其他依赖），
+ * 但请谨慎使用，否则可能会破坏其他 Mod 将你的 Mod 作为依赖时的正常使用。
  *
- * To depend on obfuscated jars you can use `devOnlyNonPublishable(rfg.deobf("dep:spec:1.2.3"))` to fetch an obfuscated jar from maven,
- * or `devOnlyNonPublishable(rfg.deobf(project.files("libs/my-mod-jar.jar")))` to use a file.
+ * 如果需要依赖混淆后的 jar，可以使用：
+ *   `devOnlyNonPublishable(rfg.deobf("dep:spec:1.2.3"))`
+ *     从 Maven 获取混淆 jar，
+ * 或：
+ *   `devOnlyNonPublishable(rfg.deobf(project.files("libs/my-mod-jar.jar")))`
+ *     使用本地文件。
  *
- * Gradle names for some of the configuration can be misleading, compileOnlyApi and runtimeOnly both get published as dependencies in Maven, but compileOnly does not.
- * The buildscript adds runtimeOnlyNonPublishable to also have a runtime dependency that's not published.
+ * 对某些配置而言，Gradle 的命名可能有些误导：
+ * compileOnlyApi 和 runtimeOnly 都会作为依赖发布到 Maven，
+ * 但 compileOnly 不会。
+ * 构建脚本还添加了 runtimeOnlyNonPublishable，
+ * 用于提供一个不会被发布的运行期依赖。
  *
- * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
+ * 更多细节请参阅：
+ * https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-//    devOnlyNonPublishable('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.482:dev')
+//    compileOnly("com.github.GTNewHorizons:GTNHLib:0.7.10:dev")
+    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.482:dev')
+    runtimeOnlyNonPublishable('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.482:dev')
 }
 

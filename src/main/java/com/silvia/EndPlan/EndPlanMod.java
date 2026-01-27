@@ -1,8 +1,14 @@
 package com.silvia.EndPlan;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import com.silvia.EndPlan.command.endplan_cilent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
+
+import com.silvia.EndPlan.recipe.RecipeRepository;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = "endplan", name = "End Plan", acceptableRemoteVersions = "*")
 public class EndPlanMod {
@@ -17,5 +23,22 @@ public class EndPlanMod {
         logger.info("End Plan is loading...");
 
         // 以后你可以在这里读取配置文件(Config)
+    }
+
+    // 新增: PostInit 阶段
+    // 这个阶段所有的模组都已经把配方注册好了
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        logger.info("Starting to dump recipes... 开始导出配方");
+
+        // 这一步在开发环境下做，生产环境可以把这个注释掉或者加个Config开关
+        RecipeRepository.load();
+    }
+
+    // === 新增部分：注册命令 ===
+    // 这个事件在服务器启动（包括单人游戏的内置服务器）时触发
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new endplan_cilent());
     }
 }
