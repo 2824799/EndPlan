@@ -1,21 +1,30 @@
 package com.silvia.EndPlan.coremod.mixin.NHUtilities;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import com.xir.NHUtilities.common.entity.EntityTimeAccelerator;
 
-@Mixin(EntityTimeAccelerator.class)
-public abstract class TimeVial {
+@Mixin(value = EntityTimeAccelerator.class, remap = false)
+public class TimeVial extends Entity {
 
-    @Shadow(remap = false)
+    public TimeVial(World worldIn) {
+        super(worldIn);
+    }
+
+    @Override
+    protected void entityInit() {}
+
+    @Shadow
     private int remainingTime;
 
-    @Shadow(remap = false)
-    protected abstract void tAccelerate();
-
-    // 直接删掉 @Shadow setDead() 的声明
+    @Shadow
+    private void tAccelerate() {}
 
     /**
      * @author Silvia
@@ -23,10 +32,14 @@ public abstract class TimeVial {
      */
     @Overwrite
     public void onEntityUpdate() {
-        net.minecraft.entity.Entity self = (net.minecraft.entity.Entity) (Object) this;
-
-        if (self.worldObj.isRemote) return;
+        if (this.worldObj.isRemote) return;
         if (remainingTime > 0) this.tAccelerate();
-        if (remainingTime <= 0) self.setDead(); // 直接使用强转后的 self 调用
+        if (remainingTime <= 0) this.setDead();
     }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound tagCompund) {}
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {}
 }
