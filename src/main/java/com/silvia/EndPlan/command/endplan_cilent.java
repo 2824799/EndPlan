@@ -2,11 +2,12 @@ package com.silvia.EndPlan.command;
 
 import java.util.List;
 
-import com.silvia.EndPlan.command.cilent.check_gt_recipe_amount;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+
+import com.silvia.EndPlan.command.cilent.check_gt_recipe_amount;
 
 public class endplan_cilent extends CommandBase {
 
@@ -32,7 +33,6 @@ public class endplan_cilent extends CommandBase {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "用法: " + getCommandUsage(sender)));
             return;
         }
-
 
         String subCommand = args[0];
 

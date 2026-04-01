@@ -1,14 +1,17 @@
 package com.silvia.EndPlan.command.cilent;
 
-import com.silvia.EndPlan.recipe.RecipeRepository;
-import gregtech.api.util.GTRecipe;
+import java.util.List;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
-import java.util.List;
+import com.silvia.EndPlan.recipe.RecipeRepository;
+
+import gregtech.api.util.GTRecipe;
 
 public class check_gt_recipe_amount {
-    public static void p(ICommandSender sender){
+
+    public static void p(ICommandSender sender) {
         // 1. 调用我们之前存好的变量
         List<GTRecipe> allRecipes = RecipeRepository.getAllRecipes();
 

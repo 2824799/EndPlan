@@ -6,7 +6,10 @@
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "minecraft.MixinItemStack"
+    "NHUtilities.TimeVial",
+    "EnderIO.MixinItemConduit",
+    "EnderIO.MixinNetworkedInventory",
+    "GT5U.TargetChamberMixin"
   ],
   "client": [
   ],
