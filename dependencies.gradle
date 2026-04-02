@@ -52,9 +52,9 @@
 dependencies {
 //    compileOnly("com.github.GTNewHorizons:GTNHLib:0.7.10:dev")
     compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.482:dev')
-//    compileOnly('com.github.GTNewHorizons:EnderIO:2.9.28:dev')
+    compileOnly('com.github.GTNewHorizons:EnderIO:2.9.28:dev')
     compileOnly name: 'NHUtilities-1.6.4-dev'
-    compileOnly name: 'EnderIO-2.9.28-dev'
+//    compileOnly name: 'EnderIO-2.9.28-dev'
 
 
 

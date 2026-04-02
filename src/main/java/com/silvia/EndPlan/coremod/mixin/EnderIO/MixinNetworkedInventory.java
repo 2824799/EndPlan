@@ -9,35 +9,34 @@ import org.spongepowered.asm.mixin.Shadow;
 import crazypants.enderio.conduit.item.IItemConduit;
 import crazypants.enderio.conduit.item.NetworkedInventory;
 
-@Mixin(NetworkedInventory.class)
+@Mixin(value = NetworkedInventory.class, remap = false)
 public abstract class MixinNetworkedInventory {
 
-    // @Shadow(remap = false)
-    // boolean canExtract() {
-    // return false;
-    // }
+    @Shadow
+    boolean canExtract() {
+        return false;
+    }
 
-    @Shadow(remap = false)
+    @Shadow
     IItemConduit con;
 
-    @Shadow(remap = false)
+    @Shadow
     ForgeDirection conDir;
 
-    // @Shadow(remap = false)
-    // private boolean transferItems() {
-    // return false;
-    // }
+    @Shadow
+    private boolean transferItems() {
+        return false;
+    }
 
     /**
      * @author Silvia
      * @reason Speed
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public void onTick() {
-        System.out.println("[EndPlan Debug] NetworkedInventory onTick is hijacked by Silvia!");
         int i = 0;
-        // while (canExtract() && con.isExtractionRedstoneConditionMet(conDir) && i <= 4096 && transferItems()) {
-        // i++;
-        // }
+        while (canExtract() && con.isExtractionRedstoneConditionMet(conDir) && i <= 4096 && transferItems()) {
+            i++;
+        }
     }
 }
