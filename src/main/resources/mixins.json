@@ -10,7 +10,8 @@
     "EnderIO.MixinItemConduit",
     "EnderIO.MixinNetworkedInventory",
     "GT5U.TargetChamberMixin",
-    "GT5U.MTEQuantumForceTransformerMixin"
+    "GT5U.MTEQuantumForceTransformerMixin",
+    "GT5U.MTEQuantumForceTransformerMixin2"
   ],
   "client": [
   ],
