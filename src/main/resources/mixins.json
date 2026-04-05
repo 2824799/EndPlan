@@ -9,7 +9,8 @@
     "NHUtilities.TimeVial",
     "EnderIO.MixinItemConduit",
     "EnderIO.MixinNetworkedInventory",
-    "GT5U.TargetChamberMixin"
+    "GT5U.TargetChamberMixin",
+    "GT5U.MTEQuantumForceTransformerMixin"
   ],
   "client": [
   ],
