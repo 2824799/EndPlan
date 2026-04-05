@@ -8,6 +8,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.silvia.EndPlan.command.cilent.check_gt_recipe_amount;
+import com.silvia.EndPlan.command.cilent.set_allowopt;
 
 public class endplan_cilent extends CommandBase {
 
@@ -18,17 +19,16 @@ public class endplan_cilent extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/endplan <check_gt_recipe_amount>";
+        return "/endplan <check_gt_recipe_amount | set_allowopt>";
     }
 
     @Override
     public int getRequiredPermissionLevel() {
-        return 0; // 0=所有人可用，4=只有OP可用。测试时设为0方便。
+        return 0; // 0=所有人可用。如果涉及修改服务端数据，正式发布时建议改为 2 或 4 (仅OP)
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        // --- 这里的操作就是你要求的：在运行时调用函数获取变量 ---
         if (args.length == 0) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "用法: " + getCommandUsage(sender)));
             return;
@@ -39,6 +39,9 @@ public class endplan_cilent extends CommandBase {
         switch (subCommand) {
             case "check_gt_recipe_amount":
                 check_gt_recipe_amount.p(sender);
+                break;
+            case "set_allowopt":
+                set_allowopt.process(sender);
                 break;
             default:
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "未知指令"));
@@ -53,8 +56,7 @@ public class endplan_cilent extends CommandBase {
     public List addTabCompletionOptions(ICommandSender sender, String[] args) {
         // 如果用户正在输入第一个参数 (二级指令)
         if (args.length == 1) {
-            // 返回匹配的建议列表
-            return getListOfStringsMatchingLastWord(args, "check_gt_recipe_amount");
+            return getListOfStringsMatchingLastWord(args, "check_gt_recipe_amount", "set_allowopt");
         }
         return null;
     }
