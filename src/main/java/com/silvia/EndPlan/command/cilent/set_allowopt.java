@@ -41,7 +41,7 @@ public class set_allowopt {
 
                     // 检查是否已经为 1，避免不必要的方块更新带来的性能消耗
                     // 注意：这里假设 allowopt 是 Integer。如果底层是 Byte，请改为 getByte 和 setByte
-                    if (!nbt.hasKey("allowopt") || nbt.getInteger("allowopt") != 1) {
+                    if (nbt.hasKey("allowopt") && nbt.getInteger("allowopt") == 0) {
 
                         // 修改 NBT 标签
                         nbt.setInteger("allowopt", 1);
