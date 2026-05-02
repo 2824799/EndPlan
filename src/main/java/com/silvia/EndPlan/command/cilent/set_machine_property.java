@@ -13,9 +13,9 @@ import net.minecraft.world.WorldServer;
 
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 
-public class set_allowopt {
+public class set_machine_property {
 
-    public static void process(ICommandSender sender) {
+    public static void process(ICommandSender sender, String key, int value) {
         MinecraftServer server = MinecraftServer.getServer();
         if (server == null) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "无法获取服务端实例。"));
@@ -39,24 +39,26 @@ public class set_allowopt {
                     NBTTagCompound nbt = new NBTTagCompound();
                     te.writeToNBT(nbt);
 
-                    // 检查是否已经为 1，避免不必要的方块更新带来的性能消耗
-                    // 注意：这里假设 allowopt 是 Integer。如果底层是 Byte，请改为 getByte 和 setByte
-                    if (nbt.hasKey("allowopt") && nbt.getInteger("allowopt") == 0) {
+                    // 必须确保这台机器本身拥有我们要修改的这个键，才进行修改
+                    // 这样可以避免把属性强加给原本不支持该属性的普通机器
+                    if (nbt.hasKey(key)) {
+                        // 检查当前值是否与目标值不同
+                        if (nbt.getInteger(key) != value) {
 
-                        // 修改 NBT 标签
-                        nbt.setInteger("allowopt", 1);
-                        // 如果原模组存的是 Byte 型，请换成: nbt.setByte("allowopt", (byte) 1);
+                            // 修改 NBT 标签
+                            nbt.setInteger(key, value);
 
-                        // 将修改后的 NBT 写回机器实例中
-                        te.readFromNBT(nbt);
+                            // 将修改后的 NBT 写回机器实例中
+                            te.readFromNBT(nbt);
 
-                        // 标记数据已脏，确保服务端在下一次保存时写入硬盘
-                        te.markDirty();
+                            // 标记数据已脏，确保服务端在下一次保存时写入硬盘
+                            te.markDirty();
 
-                        // 触发方块更新，将 NBT 的变动同步给周围的客户端
-                        world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
+                            // 触发方块更新，将 NBT 的变动同步给周围的客户端
+                            world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
 
-                        modifiedCount++;
+                            modifiedCount++;
+                        }
                     }
                 }
             }
@@ -64,6 +66,7 @@ public class set_allowopt {
 
         // 向指令发送者汇报结果
         sender.addChatMessage(
-            new ChatComponentText(EnumChatFormatting.GREEN + "操作完成！已将 " + modifiedCount + " 个加载的机器的 allowopt 设置为 1。"));
+            new ChatComponentText(
+                EnumChatFormatting.GREEN + "操作完成！已将 " + modifiedCount + " 个加载的机器的 " + key + " 设置为 " + value + "。"));
     }
 }
